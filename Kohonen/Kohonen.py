@@ -1,9 +1,15 @@
 import math
 import random
+
+import os, shutil
+
+folder = './Clusters'
 DatosEntrenamiento = []
 DatosAgrupar = []
 n_cluster = 6
-Clusters=[[],[],[],[],[],[]]
+Clusters=[]
+for x in range(n_cluster):
+    Clusters.append([])
 
 import csv
 with open("../muestra4s.csv", 'r') as csvfile:
@@ -37,6 +43,15 @@ class SOM:
         return weights
 
 def main():
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
     # T = [[1, 1, 0, 0], [0, 0, 0, 1], [1, 0, 0, 0], [0, 0, 1, 1]]
     T = DatosEntrenamiento
     m, n = len(T), len(T[0])
@@ -57,7 +72,6 @@ def main():
             J = ob.winner(weights, sample)
             weights = ob.update(weights, sample, J, alpha)
     print("******************************************************")
-    # Inside the "Main" function
     mitski = 0
     for fila in DatosEntrenamiento:
         f = ob.winner(weights, fila)
@@ -66,7 +80,7 @@ def main():
     
     
     for x in range(n_cluster):
-        with open('Cluster0'+str(x)+'.csv', 'w', newline='') as csvfile:
+        with open('./Clusters/Cluster0'+str(x)+'.csv', 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerows(Clusters[x])
 

@@ -1,25 +1,12 @@
 import math
 import random
-
 import os, shutil
-
-folder = './Clusters'
-DatosEntrenamiento = []
-DatosAgrupar = []
-n_cluster = 6
-Clusters=[]
-for x in range(n_cluster):
-    Clusters.append([])
-
 import csv
-with open("../muestra4s.csv", 'r') as csvfile:
-    csvreader = csv.reader(csvfile)
-    next(csvfile)
-    for row in csvreader:
-        datos1 = [float(row[1]), float(row[2]), float(row[3]), float(row[4])]
-        datos2 = [row[0], float(row[1]), float(row[2]), float(row[3]), float(row[4])]
-        DatosEntrenamiento.append(datos1)
-        DatosAgrupar.append(datos2)
+
+folder = './Clusters_'
+archivos = ['boxcox', 'estandarizados', 'normalizados', 'Z-score', 'muestra4s']
+n_cluster = 15       # cambiar para obtener x numero de clusters
+semilla = 'LindaLindaLinda'    # cambiar para obtener nuevas pesas aleatorias
 
 class SOM:
     def winner(self, weights, sample):
@@ -43,48 +30,66 @@ class SOM:
         return weights
 
 def main():
-    for filename in os.listdir(folder):
-        file_path = os.path.join(folder, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
-        except Exception as e:
-            print('Failed to delete %s. Reason: %s' % (file_path, e))
-    # T = [[1, 1, 0, 0], [0, 0, 0, 1], [1, 0, 0, 0], [0, 0, 1, 1]]
-    T = DatosEntrenamiento
-    m, n = len(T), len(T[0])
-    random.seed(1157)
-    weights = []
-    for x in range(n_cluster):
-        datos = [random.random(), random.random(), random.random(), random.random()]
-        weights.append(datos)
-    print("Initial weights: "+str(weights))
-    ob = SOM()
-    epochs = 10
-    alpha = 0.5
+    for tipo in archivos:
 
-    # Inside the "main" function
-    for i in range(epochs):
-        for j in range(m):
-            sample = T[j]
-            J = ob.winner(weights, sample)
-            weights = ob.update(weights, sample, J, alpha)
-    print("******************************************************")
-    mitski = 0
-    for fila in DatosEntrenamiento:
-        f = ob.winner(weights, fila)
-        Clusters[f].append(DatosAgrupar[mitski])
-        mitski +=  1
-    
-    
-    for x in range(n_cluster):
-        with open('./Clusters/Cluster0'+str(x)+'.csv', 'w', newline='') as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerows(Clusters[x])
+        DatosEntrenamiento = []
+        DatosAgrupar = []
+        Clusters=[]
+        for x in range(n_cluster):
+            Clusters.append([])
 
-    print("Trained weights: ", weights)
+        with open("../datos/"+tipo+".csv", 'r') as csvfile:
+            csvreader = csv.reader(csvfile)
+            next(csvfile)
+            for row in csvreader:
+                datos1 = [float(row[1]), float(row[2]), float(row[3]), float(row[4])]
+                datos2 = [row[0], float(row[1]), float(row[2]), float(row[3]), float(row[4])]
+                DatosEntrenamiento.append(datos1)
+                DatosAgrupar.append(datos2)
+
+        for filename in os.listdir(folder+tipo):
+            file_path = os.path.join(folder+tipo, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+        # T = [[1, 1, 0, 0], [0, 0, 0, 1], [1, 0, 0, 0], [0, 0, 1, 1]]
+        T = DatosEntrenamiento
+        m, n = len(T), len(T[0])
+        random.seed(semilla)
+        weights = []
+        for x in range(n_cluster):
+            datos = [random.random(), random.random(), random.random(), random.random()]
+            weights.append(datos)
+        #print("Initial weights: "+str(weights))
+        ob = SOM()
+        epochs = 10
+        alpha = 0.5
+
+        # Inside the "main" function
+        for i in range(epochs):
+            for j in range(m):
+                sample = T[j]
+                J = ob.winner(weights, sample)
+                weights = ob.update(weights, sample, J, alpha)
+        #print("******************************************************")
+        mitski = 0
+        for fila in DatosEntrenamiento:
+            f = ob.winner(weights, fila)
+            Clusters[f].append(DatosAgrupar[mitski])
+            mitski +=  1
+        
+        for x in range(n_cluster):
+            if Clusters[x]:
+                with open(folder+tipo+'/Cluster0'+str(x)+'.csv', 'w', newline='') as csvfile:
+                    writer = csv.writer(csvfile)
+                    writer.writerows(Clusters[x])
+
+        #print("Trained weights: ", weights)
 
 if __name__ == "__main__":
     main()

@@ -2,6 +2,7 @@ from scipy import stats
 import pandas as pd
 import csv
 
+id = []
 sensor1= []
 sensor2= []
 sensor3= []
@@ -11,6 +12,7 @@ with open("../muestra4s.csv", 'r') as csvfile:
     csvreader = csv.reader(csvfile)
     next(csvfile)
     for row in csvreader:
+        id.append(row[0])
         sensor1.append(float(row[1]))
         sensor2.append(float(row[2]))
         sensor3.append(float(row[3]))
@@ -22,6 +24,7 @@ transformed_data3, lambda_opt3 = stats.boxcox(sensor3)
 transformed_data4, lambda_opt4 = stats.boxcox(sensor4)
 
 df = pd.DataFrame({
+    'id': id,
     'sensor1': sensor1,
     'sensor2': sensor2,
     'sensor3': sensor3,
@@ -56,40 +59,40 @@ df['sensor2'] = (df['sensor2'] - sen2pro) / sen2des
 df['sensor3'] = (df['sensor3'] - sen3pro) / sen3des
 df['sensor4'] = (df['sensor4'] - sen4pro) / sen4des
 
-headers = ["sensor1","sensor2","sensor3","sensor4"]
+headers = ["id","sensor1","sensor2","sensor3","sensor4"]
 zscore = [headers]
 normal = [headers]
 Boxcox = [headers]
 i=0
 for x in sensor1:
-    Dzscore = [zscore1[i] ,zscore2[i] , zscore3[i] , zscore4[i]]
+    Dzscore = [id[i], zscore1[i] ,zscore2[i] , zscore3[i] , zscore4[i]]
     norms1 = (sensor1[i] - sen1min) / (sen1max - sen1min)
     norms2 = (sensor2[i] - sen2min) / (sen2max - sen2min)
     norms3 = (sensor3[i] - sen3min) / (sen3max - sen3min)
     norms4 = (sensor4[i] - sen4min) / (sen4max - sen4min)
 
-    Dnorm = [norms1 , norms2, norms3, norms4]
-    DBCx = [transformed_data1[i],transformed_data2[i],transformed_data3[i],transformed_data4[i],]
+    Dnorm = [id[i], norms1 , norms2, norms3, norms4]
+    DBCx = [id[i], transformed_data1[i],transformed_data2[i],transformed_data3[i],transformed_data4[i],]
     zscore.append(Dzscore)
     normal.append(Dnorm)
     Boxcox.append(DBCx)
     i=i+1
 
-with open('Z-score.csv', 'w', newline='') as csvfile:
+with open('../datos/Z-score.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerows(zscore)
 
-with open('normalizados.csv', 'w', newline='') as csvfile:
+with open('../datos/normalizados.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerows(normal)
 
-df.to_csv('estandarizados.csv', index=False)
+df.to_csv('../datos/estandarizados.csv', index=False)
 
 print(f"Optimal lambda sensor 1: {lambda_opt1}")
 print(f"Optimal lambda sensor 2: {lambda_opt2}")
 print(f"Optimal lambda sensor 3: {lambda_opt3}")
 print(f"Optimal lambda sensor 4: {lambda_opt4}")
 
-with open('boxcox.csv', 'w', newline='') as csvfile:
+with open('../datos/boxcox.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerows(Boxcox)

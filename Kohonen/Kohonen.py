@@ -5,7 +5,7 @@ import csv
 
 folder = './Clusters_'
 archivos = ['boxcox', 'estandarizados', 'normalizados', 'Z-score', 'muestra4s']
-n_cluster = 15       # cambiar para obtener x numero de clusters
+n_cluster = 4       # cambiar para obtener x numero de clusters
 semilla = 'LindaLindaLinda'    # cambiar para obtener nuevas pesas aleatorias
 
 class SOM:

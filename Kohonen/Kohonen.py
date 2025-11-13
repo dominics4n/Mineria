@@ -5,7 +5,7 @@ import csv
 
 folder = './Clusters_'
 archivos = ['boxcox', 'estandarizados', 'normalizados', 'Z-score', 'muestra4s']
-n_cluster = 4       # cambiar para obtener x numero de clusters
+n_cluster = 3       # cambiar para obtener x numero de clusters
 semilla = 'LindaLindaLinda'    # cambiar para obtener nuevas pesas aleatorias
 
 class SOM:
@@ -67,7 +67,7 @@ def main():
             weights.append(datos)
         #print("Initial weights: "+str(weights))
         ob = SOM()
-        epochs = 10
+        epochs = 17
         alpha = 0.5
 
         # Inside the "main" function

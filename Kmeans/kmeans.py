@@ -2,15 +2,16 @@ import numpy as np
 import csv
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
+from sklearn.metrics import silhouette_score
 
-no_clusters = 4
+no_clusters = 3
 folder = './Clusters_'
 archivos = ['boxcox', 'estandarizados', 'normalizados', 'Z-score', 'muestra4s']
 
 for tipo in archivos:
     id = []
     kys = []
-    Clusters = [[],[],[],[]]
+    Clusters = [[],[],[]]
 
     with open("../datos/"+tipo+".csv", 'r') as csvfile:
         csvreader = csv.reader(csvfile)
@@ -21,11 +22,12 @@ for tipo in archivos:
             kys.append(datos)
 
     kmeans = KMeans(n_clusters=no_clusters, random_state=42).fit(kys)
-    print (kmeans)
+    print (tipo + ' kmeans')
     print(kmeans.cluster_centers_)
 
     grupo = kmeans.predict(kys)
-
+    silhouette = silhouette_score(kys, kmeans.fit_predict(kys))
+    print(silhouette)
     aurora = 0
     for num in grupo:
         datos = [id[aurora],kys[aurora][0], kys[aurora][1], kys[aurora][2], kys[aurora][3]]

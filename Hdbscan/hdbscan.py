@@ -1,17 +1,15 @@
 import numpy as np
 import csv
-from sklearn.cluster import KMeans
-import matplotlib.pyplot as plt
+from sklearn.cluster import HDBSCAN
 from sklearn.metrics import silhouette_score
 
-no_clusters = 3
 folder = './Clusters_'
 archivos = ['boxcox', 'estandarizados', 'normalizados', 'Z-score', 'muestra4s']
 
 for tipo in archivos:
     id = []
-    kys = []
-    Clusters = [[],[],[]]
+    DejaVu = []
+    Clusters = []
 
     with open("../datos/"+tipo+".csv", 'r') as csvfile:
         csvreader = csv.reader(csvfile)
@@ -19,16 +17,22 @@ for tipo in archivos:
         for row in csvreader:
             id.append(row[0])
             datos = [float(row[1]),float(row[2]), float(row[3]), float(row[4])]
-            kys.append(datos)
+            DejaVu.append(datos)
 
-    kmeans = KMeans(n_clusters=no_clusters, random_state=42).fit(kys)
+    hdb = HDBSCAN(min_cluster_size=6,
+                            cluster_selection_method='eom',
+                            metric='euclidean',
+                            algorithm='auto',
+                            leaf_size=30)
     #print (kmeans.fit_predict(kys))
-    #print (tipo + ' kmeans')
-    print(kmeans.cluster_centers_)
+    #print (tipo + ' HDBSCAN')
+    hdb.fit(DejaVu)
+    labels = hdb.labels_
+    #print(labels)
 
-    grupo = kmeans.predict(kys)
-    silhouette = silhouette_score(kys, kmeans.fit_predict(kys))
-    print(tipo + ' kmeans: ' + str(silhouette))
+    #grupo = kmeans.predict(kys)
+    silhouette = silhouette_score(DejaVu, labels)
+    print(tipo + ' HDBSCAN: '+ str(silhouette))
     aurora = 0
     # for num in grupo:
     #     datos = [id[aurora],kys[aurora][0], kys[aurora][1], kys[aurora][2], kys[aurora][3]]

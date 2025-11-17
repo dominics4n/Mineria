@@ -1,3 +1,4 @@
+from sklearn.metrics import silhouette_score
 import math
 import random
 import os, shutil
@@ -35,6 +36,7 @@ def main():
         DatosEntrenamiento = []
         DatosAgrupar = []
         Clusters=[]
+        ClusterList = []
         for x in range(n_cluster):
             Clusters.append([])
 
@@ -47,15 +49,15 @@ def main():
                 DatosEntrenamiento.append(datos1)
                 DatosAgrupar.append(datos2)
 
-        for filename in os.listdir(folder+tipo):
-            file_path = os.path.join(folder+tipo, filename)
-            try:
-                if os.path.isfile(file_path) or os.path.islink(file_path):
-                    os.unlink(file_path)
-                elif os.path.isdir(file_path):
-                    shutil.rmtree(file_path)
-            except Exception as e:
-                print('Failed to delete %s. Reason: %s' % (file_path, e))
+        # for filename in os.listdir(folder+tipo):
+        #     file_path = os.path.join(folder+tipo, filename)
+        #     try:
+        #         if os.path.isfile(file_path) or os.path.islink(file_path):
+        #             os.unlink(file_path)
+        #         elif os.path.isdir(file_path):
+        #             shutil.rmtree(file_path)
+        #     except Exception as e:
+        #         print('Failed to delete %s. Reason: %s' % (file_path, e))
 
         # T = [[1, 1, 0, 0], [0, 0, 0, 1], [1, 0, 0, 0], [0, 0, 1, 1]]
         T = DatosEntrenamiento
@@ -80,14 +82,19 @@ def main():
         mitski = 0
         for fila in DatosEntrenamiento:
             f = ob.winner(weights, fila)
+            ClusterList.append(f)
             Clusters[f].append(DatosAgrupar[mitski])
             mitski +=  1
         
-        for x in range(n_cluster):
-            if Clusters[x]:
-                with open(folder+tipo+'/Cluster0'+str(x)+'.csv', 'w', newline='') as csvfile:
-                    writer = csv.writer(csvfile)
-                    writer.writerows(Clusters[x])
+        #print (tipo + ' Kohonen:')
+        silhouette = silhouette_score(DatosEntrenamiento, ClusterList)
+        print(tipo + ' Kohonen: ' + str(silhouette))
+
+        # for x in range(n_cluster):
+        #     if Clusters[x]:
+        #         with open(folder+tipo+'/Cluster0'+str(x)+'.csv', 'w', newline='') as csvfile:
+        #             writer = csv.writer(csvfile)
+        #             writer.writerows(Clusters[x])
 
         #print("Trained weights: ", weights)
 

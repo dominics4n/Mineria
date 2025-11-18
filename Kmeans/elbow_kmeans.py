@@ -9,7 +9,9 @@ kys = []
 no_clusters = 6
 archivos = []
 folder = './Clusters_'
-archivos = ['boxcox', 'estandarizados', 'normalizados', 'Z-score', 'muestra4s']
+archivos = ['boxcox', 'estandarizados', 'normalizados', 'Z-score', 'muestra4s',
+            'ICA_boxcox', 'ICA_estandarizados', 'ICA_normalizados', 'ICA_Z-score',
+            'ICA_muestra4s']
 
 Clusters = [[],[],[],[],[],[]]
 for tipo in archivos:

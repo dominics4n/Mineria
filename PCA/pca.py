@@ -1,15 +1,16 @@
 import numpy as np
 import csv
-from sklearn.decomposition import FastICA
+from sklearn.decomposition import PCA
 from sklearn.metrics import silhouette_score
 
 folder = './Clusters_'
-archivos = ['boxcox', 'estandarizados', 'normalizados', 'Z-score', 'muestra4s']
+archivos = ['muestra4s']
 
 for tipo in archivos:
     id = []
     DejaVu = []
     Clusters = []
+    Componentes = 2
 
     with open("../datos/"+tipo+".csv", 'r') as csvfile:
         csvreader = csv.reader(csvfile)
@@ -19,17 +20,20 @@ for tipo in archivos:
             datos = [float(row[1]),float(row[2]), float(row[3]), float(row[4])]
             DejaVu.append(datos)
 
-    ica = FastICA()
-    Sica = ica.fit_transform(DejaVu)
+    pca = PCA(n_components=Componentes)
+    pca.fit(DejaVu)
+    Spca = pca.fit_transform(DejaVu)
+    print(tipo+': ')
+    print(Spca)
     headers = ["id","sensor1","sensor2","sensor3","sensor4"]
     icacsv = [headers]
 
     aurora = 0
-    for row in Sica:
-        datos = [id[aurora],Sica[aurora][0], Sica[aurora][1], Sica[aurora][2], Sica[aurora][3]]
+    for row in Spca:
+        datos = [id[aurora],Spca[aurora][0], Spca[aurora][1]]
         icacsv.append(datos)
         aurora = aurora + 1
 
-    with open('../datos/ICA_'+ tipo +'.csv', 'w', newline='') as csvfile:
+    with open('../datos/PCA2_'+ tipo +'.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(icacsv)

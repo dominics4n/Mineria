@@ -3,9 +3,10 @@ import math
 import random
 import os, shutil
 import csv
+import matplotlib.pyplot as plt
 
 folder = './Clusters_'
-minSilhouette = 0.3
+minSilhouette = 0.5
 archivos = ['boxcox', 'estandarizados', 'normalizados', 'Z-score', 'muestra4s',
             'ICA_boxcox', 'ICA_estandarizados', 'ICA_normalizados', 'ICA_Z-score',
             'ICA_muestra4s']
@@ -97,7 +98,7 @@ def main():
         silhouette = silhouette_score(DatosEntrenamiento, ClusterList)
         if silhouette > minSilhouette:
             print(tipo + ' Kohonen: ' + str(silhouette))
-
+            
         # for x in range(n_cluster):
         #     if Clusters[x]:
         #         with open(folder+tipo+'/Cluster0'+str(x)+'.csv', 'w', newline='') as csvfile:
@@ -108,6 +109,9 @@ def main():
     for tipo in archDim3:
         DatosEntrenamiento = []
         DatosAgrupar = []
+        sen1 = []
+        sen2 = []
+        sen3 = []
         Clusters=[]
         ClusterList = []
         for x in range(n_cluster):
@@ -121,6 +125,9 @@ def main():
                 datos2 = [row[0], float(row[1]), float(row[2]), float(row[3])]
                 DatosEntrenamiento.append(datos1)
                 DatosAgrupar.append(datos2)
+                sen1.append(float(row[1]))
+                sen2.append(float(row[2]))
+                sen3.append(float(row[3]))
 
         # for filename in os.listdir(folder+tipo):
         #     file_path = os.path.join(folder+tipo, filename)
@@ -163,6 +170,10 @@ def main():
         silhouette = silhouette_score(DatosEntrenamiento, ClusterList)
         if silhouette > minSilhouette:
             print(tipo + ' Kohonen: ' + str(silhouette))
+            fig = plt.figure()
+            ax = fig.add_subplot(projection='3d')
+            ax.scatter(sen1, sen2, sen3, c=ClusterList)
+            plt.show()
 
         # for x in range(n_cluster):
         #     if Clusters[x]:
@@ -177,6 +188,9 @@ def main():
         DatosAgrupar = []
         Clusters=[]
         ClusterList = []
+        sen1 = []
+        sen2 = []
+        
         for x in range(n_cluster):
             Clusters.append([])
 
@@ -188,6 +202,8 @@ def main():
                 datos2 = [row[0], float(row[1]), float(row[2])]
                 DatosEntrenamiento.append(datos1)
                 DatosAgrupar.append(datos2)
+                sen1.append(float(row[1]))
+                sen2.append(float(row[2]))
 
         # for filename in os.listdir(folder+tipo):
         #     file_path = os.path.join(folder+tipo, filename)
@@ -230,6 +246,8 @@ def main():
         silhouette = silhouette_score(DatosEntrenamiento, ClusterList)
         if silhouette > minSilhouette:
             print(tipo + ' Kohonen: ' + str(silhouette))
+            plt.scatter(sen1, sen2, c=ClusterList)
+            plt.show()
 
         # for x in range(n_cluster):
         #     if Clusters[x]:

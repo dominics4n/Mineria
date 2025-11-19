@@ -4,8 +4,8 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 from sklearn.metrics import silhouette_score
 
-no_clusters = 4
-minSilhouette = 0.3
+no_clusters = 2
+minSilhouette = 0.5
 folder = './Clusters_'
 archivos = ['boxcox', 'estandarizados', 'normalizados', 'Z-score', 'muestra4s',
             'ICA_boxcox', 'ICA_estandarizados', 'ICA_normalizados', 'ICA_Z-score',
@@ -53,6 +53,9 @@ for tipo in archDim3:
     id = []
     kys = []
     Clusters = [[],[],[]]
+    sen1 = []
+    sen2 = []
+    sen3 = []
 
     with open("../datos/"+tipo+".csv", 'r') as csvfile:
         csvreader = csv.reader(csvfile)
@@ -61,6 +64,9 @@ for tipo in archDim3:
             id.append(row[0])
             datos = [float(row[1]),float(row[2]), float(row[3])]
             kys.append(datos)
+            sen1.append(float(row[1]))
+            sen2.append(float(row[2]))
+            sen3.append(float(row[3]))
 
     kmeans = KMeans(n_clusters=no_clusters, random_state=42).fit(kys)
     #print (kmeans.fit_predict(kys))
@@ -71,6 +77,10 @@ for tipo in archDim3:
     silhouette = silhouette_score(kys, kmeans.fit_predict(kys))
     if silhouette > minSilhouette:
         print(tipo + ' kmeans: ' + str(silhouette))
+        fig = plt.figure()
+        ax = fig.add_subplot(projection='3d')
+        ax.scatter(sen1, sen2, sen3, c=grupo)
+        plt.show()
     aurora = 0
     # for num in grupo:
     #     datos = [id[aurora],kys[aurora][0], kys[aurora][1], kys[aurora][2], kys[aurora][3]]
@@ -87,6 +97,8 @@ for tipo in archDim2:
     id = []
     kys = []
     Clusters = [[],[],[]]
+    sen1 = []
+    sen2 = []
 
     with open("../datos/"+tipo+".csv", 'r') as csvfile:
         csvreader = csv.reader(csvfile)
@@ -95,6 +107,8 @@ for tipo in archDim2:
             id.append(row[0])
             datos = [float(row[1]),float(row[2])]
             kys.append(datos)
+            sen1.append(float(row[1]))
+            sen2.append(float(row[2]))
 
     kmeans = KMeans(n_clusters=no_clusters, random_state=42).fit(kys)
     #print (kmeans.fit_predict(kys))
@@ -105,6 +119,9 @@ for tipo in archDim2:
     silhouette = silhouette_score(kys, kmeans.fit_predict(kys))
     if silhouette > minSilhouette:
         print(tipo + ' kmeans: ' + str(silhouette))
+        plt.scatter(sen1, sen2, c=grupo)
+        plt.show()
+
     aurora = 0
     # for num in grupo:
     #     datos = [id[aurora],kys[aurora][0], kys[aurora][1], kys[aurora][2], kys[aurora][3]]

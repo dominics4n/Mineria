@@ -2,9 +2,11 @@ import numpy as np
 import csv
 from sklearn.cluster import HDBSCAN
 from sklearn.metrics import silhouette_score
+import matplotlib.pyplot as plt
 
-minC = 7
-minSilhouette = 0.3
+minC = 3
+minSilhouette = 0.5
+eps = 0.09
 folder = './Clusters_'
 archivos = ['boxcox', 'estandarizados', 'normalizados', 'Z-score', 'muestra4s',
             'ICA_boxcox', 'ICA_estandarizados', 'ICA_normalizados', 'ICA_Z-score',
@@ -28,6 +30,7 @@ for tipo in archivos:
             DejaVu.append(datos)
 
     hdb = HDBSCAN(min_cluster_size=minC,
+                            cluster_selection_epsilon=eps,
                             cluster_selection_method='eom',
                             metric='euclidean',
                             algorithm='auto',
@@ -61,6 +64,9 @@ for tipo in archDim3:
     id = []
     DejaVu = []
     Clusters = []
+    sen1 = []
+    sen2 = []
+    sen3 = []
 
     with open("../datos/"+tipo+".csv", 'r') as csvfile:
         csvreader = csv.reader(csvfile)
@@ -69,8 +75,12 @@ for tipo in archDim3:
             id.append(row[0])
             datos = [float(row[1]),float(row[2]), float(row[3])]
             DejaVu.append(datos)
+            sen1.append(float(row[1]))
+            sen2.append(float(row[2]))
+            sen3.append(float(row[3]))
 
     hdb = HDBSCAN(min_cluster_size=minC,
+                            cluster_selection_epsilon=eps,
                             cluster_selection_method='eom',
                             metric='euclidean',
                             algorithm='auto',
@@ -87,6 +97,11 @@ for tipo in archDim3:
         silhouette = silhouette_score(DejaVu, labels)
         if silhouette > minSilhouette:
             print(tipo + ' HDBSCAN: '+ str(silhouette))
+            fig = plt.figure()
+            ax = fig.add_subplot(projection='3d')
+            ax.scatter(sen1, sen2, sen3, c=labels)
+            plt.show()
+
     aurora = 0
     # for num in grupo:
     #     datos = [id[aurora],kys[aurora][0], kys[aurora][1], kys[aurora][2], kys[aurora][3]]
@@ -103,6 +118,8 @@ for tipo in archDim2:
     id = []
     DejaVu = []
     Clusters = []
+    sen1 = []
+    sen2 = []
 
     with open("../datos/"+tipo+".csv", 'r') as csvfile:
         csvreader = csv.reader(csvfile)
@@ -111,8 +128,11 @@ for tipo in archDim2:
             id.append(row[0])
             datos = [float(row[1]),float(row[2])]
             DejaVu.append(datos)
+            sen1.append(float(row[1]))
+            sen2.append(float(row[2]))
 
     hdb = HDBSCAN(min_cluster_size=minC,
+                            cluster_selection_epsilon=eps,
                             cluster_selection_method='eom',
                             metric='euclidean',
                             algorithm='auto',
@@ -129,6 +149,9 @@ for tipo in archDim2:
         silhouette = silhouette_score(DejaVu, labels)
         if silhouette > minSilhouette:
             print(tipo + ' HDBSCAN: '+ str(silhouette))
+            plt.scatter(sen1, sen2, c=labels)
+            plt.show()
+
     aurora = 0
     # for num in grupo:
     #     datos = [id[aurora],kys[aurora][0], kys[aurora][1], kys[aurora][2], kys[aurora][3]]

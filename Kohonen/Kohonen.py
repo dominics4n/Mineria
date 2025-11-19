@@ -1,4 +1,5 @@
 from sklearn.metrics import silhouette_score
+import numpy as np
 import math
 import random
 import os, shutil
@@ -6,16 +7,24 @@ import csv
 import matplotlib.pyplot as plt
 
 folder = './Clusters_'
+n_cluster = 3       # cambiar para obtener x numero de clusters
+semilla = 'LindaLindaLinda'    # cambiar para obtener nuevas pesas aleatorias
 minSilhouette = 0.5
 archivos = ['boxcox', 'estandarizados', 'normalizados', 'Z-score', 'muestra4s',
             'ICA_boxcox', 'ICA_estandarizados', 'ICA_normalizados', 'ICA_Z-score',
-            'ICA_muestra4s']
+            'ICA_muestra4s', 'filtrado_boxcox', 'filtrado_estandarizados', 
+            'filtrado_normalizados', 'filtrado_Z-score', 'filtrado_muestra4s',
+            'filtrado_ICA_boxcox', 'filtrado_ICA_estandarizados', 
+            'filtrado_ICA_normalizados', 'filtrado_ICA_Z-score',
+            'filtrado_ICA_muestra4s']
 archDim3 = ['PCA3_boxcox', 'PCA3_estandarizados', 'PCA3_normalizados', 
-            'PCA3_Z-score', 'PCA3_muestra4s']
+            'PCA3_Z-score', 'PCA3_muestra4s', 'filtrado_PCA3_boxcox', 
+            'filtrado_PCA3_estandarizados', 'filtrado_PCA3_normalizados', 
+            'filtrado_PCA3_Z-score', 'filtrado_PCA3_muestra4s']
 archDim2 = ['PCA2_boxcox', 'PCA2_estandarizados', 'PCA2_normalizados', 
-            'PCA2_Z-score', 'PCA2_muestra4s']
-n_cluster = 3       # cambiar para obtener x numero de clusters
-semilla = 'LindaLindaLinda'    # cambiar para obtener nuevas pesas aleatorias
+            'PCA2_Z-score', 'PCA2_muestra4s', 'filtrado_PCA2_boxcox', 
+            'filtrado_PCA2_estandarizados', 'filtrado_PCA2_normalizados', 
+            'filtrado_PCA2_Z-score', 'filtrado_PCA2_muestra4s']
 
 class SOM:
     def winner(self, weights, sample):
@@ -166,14 +175,16 @@ def main():
             Clusters[f].append(DatosAgrupar[mitski])
             mitski +=  1
         
+        npclusterlist = np.unique(ClusterList).tolist()
         #print (tipo + ' Kohonen:')
-        silhouette = silhouette_score(DatosEntrenamiento, ClusterList)
-        if silhouette > minSilhouette:
-            print(tipo + ' Kohonen: ' + str(silhouette))
-            fig = plt.figure()
-            ax = fig.add_subplot(projection='3d')
-            ax.scatter(sen1, sen2, sen3, c=ClusterList)
-            plt.show()
+        if len(npclusterlist) > 1:
+            silhouette = silhouette_score(DatosEntrenamiento, ClusterList)
+            if silhouette > minSilhouette:
+                print(tipo + ' Kohonen: ' + str(silhouette))
+                # fig = plt.figure()
+                # ax = fig.add_subplot(projection='3d')
+                # ax.scatter(sen1, sen2, sen3, c=ClusterList)
+                # plt.show()
 
         # for x in range(n_cluster):
         #     if Clusters[x]:
@@ -243,11 +254,14 @@ def main():
             mitski +=  1
         
         #print (tipo + ' Kohonen:')
-        silhouette = silhouette_score(DatosEntrenamiento, ClusterList)
-        if silhouette > minSilhouette:
-            print(tipo + ' Kohonen: ' + str(silhouette))
-            plt.scatter(sen1, sen2, c=ClusterList)
-            plt.show()
+        npclusterlist = np.unique(ClusterList).tolist()
+        #print (tipo + ' Kohonen:')
+        if len(npclusterlist) > 1:
+            silhouette = silhouette_score(DatosEntrenamiento, ClusterList)
+            if silhouette > minSilhouette:
+                print(tipo + ' Kohonen: ' + str(silhouette))
+                # plt.scatter(sen1, sen2, c=ClusterList)
+                # plt.show()
 
         # for x in range(n_cluster):
         #     if Clusters[x]:

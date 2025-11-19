@@ -4,17 +4,25 @@ from sklearn.cluster import HDBSCAN
 from sklearn.metrics import silhouette_score
 import matplotlib.pyplot as plt
 
-minC = 3
+minC = 2
 minSilhouette = 0.5
 eps = 0.09
 folder = './Clusters_'
 archivos = ['boxcox', 'estandarizados', 'normalizados', 'Z-score', 'muestra4s',
             'ICA_boxcox', 'ICA_estandarizados', 'ICA_normalizados', 'ICA_Z-score',
-            'ICA_muestra4s']
+            'ICA_muestra4s', 'filtrado_boxcox', 'filtrado_estandarizados', 
+            'filtrado_normalizados', 'filtrado_Z-score', 'filtrado_muestra4s',
+            'filtrado_ICA_boxcox', 'filtrado_ICA_estandarizados', 
+            'filtrado_ICA_normalizados', 'filtrado_ICA_Z-score',
+            'filtrado_ICA_muestra4s']
 archDim3 = ['PCA3_boxcox', 'PCA3_estandarizados', 'PCA3_normalizados', 
-            'PCA3_Z-score', 'PCA3_muestra4s']
+            'PCA3_Z-score', 'PCA3_muestra4s', 'filtrado_PCA3_boxcox', 
+            'filtrado_PCA3_estandarizados', 'filtrado_PCA3_normalizados', 
+            'filtrado_PCA3_Z-score', 'filtrado_PCA3_muestra4s']
 archDim2 = ['PCA2_boxcox', 'PCA2_estandarizados', 'PCA2_normalizados', 
-            'PCA2_Z-score', 'PCA2_muestra4s']
+            'PCA2_Z-score', 'PCA2_muestra4s', 'filtrado_PCA2_boxcox', 
+            'filtrado_PCA2_estandarizados', 'filtrado_PCA2_normalizados', 
+            'filtrado_PCA2_Z-score', 'filtrado_PCA2_muestra4s']
 
 for tipo in archivos:
     id = []
@@ -42,12 +50,14 @@ for tipo in archivos:
     #print(labels)
 
     nplabel = np.unique(labels).tolist()
+    
 
     if len(nplabel) > 1:
         #grupo = kmeans.predict(kys)
         silhouette = silhouette_score(DejaVu, labels)
         if silhouette > minSilhouette:
             print(tipo + ' HDBSCAN: '+ str(silhouette))
+            #print(nplabel)
     aurora = 0
     # for num in grupo:
     #     datos = [id[aurora],kys[aurora][0], kys[aurora][1], kys[aurora][2], kys[aurora][3]]
@@ -91,16 +101,18 @@ for tipo in archDim3:
     labels = hdb.labels_
     #print(labels)
     nplabel = np.unique(labels).tolist()
+    
 
     if len(nplabel) > 1:
         #grupo = kmeans.predict(kys)
         silhouette = silhouette_score(DejaVu, labels)
         if silhouette > minSilhouette:
             print(tipo + ' HDBSCAN: '+ str(silhouette))
-            fig = plt.figure()
-            ax = fig.add_subplot(projection='3d')
-            ax.scatter(sen1, sen2, sen3, c=labels)
-            plt.show()
+            #print(nplabel)
+            # fig = plt.figure()
+            # ax = fig.add_subplot(projection='3d')
+            # ax.scatter(sen1, sen2, sen3, c=labels)
+            # plt.show()
 
     aurora = 0
     # for num in grupo:
@@ -149,8 +161,9 @@ for tipo in archDim2:
         silhouette = silhouette_score(DejaVu, labels)
         if silhouette > minSilhouette:
             print(tipo + ' HDBSCAN: '+ str(silhouette))
-            plt.scatter(sen1, sen2, c=labels)
-            plt.show()
+            #print(nplabel)
+            # plt.scatter(sen1, sen2, c=labels)
+            # plt.show()
 
     aurora = 0
     # for num in grupo:
